@@ -1,20 +1,17 @@
 extern crate clap;
-extern crate discord_rich_presence;
-extern crate metaflac;
+extern crate lofty;
 extern crate rodio;
 
 use clap::{App, Arg};
-use metaflac::Tag;
+use lofty::{Accessor, Probe, TaggedFileExt};
 use rodio::Sink;
 use std::fs::File;
-use std::io::BufReader;
 
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Parse command-line arguments
     let matches = App::new("RustCLIMusic")
         .arg(
@@ -30,20 +27,21 @@ fn main() {
     let file_path = matches.value_of("file").unwrap();
     let repeat = matches.is_present("repeat");
 
-    let file = File::open(file_path).unwrap();
-    let mut buf_reader = BufReader::new(file);
+    let tagged_file = Probe::open(file_path)
+        .expect("ERROR: No path")
+        .read()
+        .expect("ERROR: Failed to read file");
 
-    let tag = Tag::read_from(&mut buf_reader).unwrap();
+    let tag = match tagged_file.primary_tag() {
+        Some(primary_tag) => primary_tag,
+        None => tagged_file.first_tag().expect("ERROR: No tags found"),
+    };
 
-    let title = tag
-        .get_vorbis("title")
-        .and_then(|v| v.map(|s| s.to_string()).next())
-        .unwrap_or_else(|| String::from("Unknown Title"));
+    let binding_title = tag.title();
+    let binding_artist = tag.artist();
 
-    let artist = tag
-        .get_vorbis("artist")
-        .and_then(|v| v.map(|s| s.to_string()).next())
-        .unwrap_or_else(|| String::from("Unknown Artist"));
+    let title = binding_title.as_deref().unwrap_or("None");
+    let artist = binding_artist.as_deref().unwrap_or("None");
 
     // Create an output stream
     let (_stream, stream_handle) = rodio::OutputStream::try_default().unwrap();
@@ -58,32 +56,10 @@ fn main() {
         println!("Playing {} by {}", title, artist);
     } else {
         eprintln!("Error: Failed to open file {}", file_path);
-        return;
+        return Ok(());
     };
 
-    
-    //discord rpc func
-    let drp_result = DiscordIpcClient::new("1205851178731175976");
-
-    if let Ok(mut drp) = drp_result {
-        match drp.connect() {
-            Ok(_) => {
-                println!("Connected to Discord successfully.");
-
-                let formatted_title = format!("Playing {} by {}", title, artist); //work around (not really), old method would drop temp val at end of statement
-
-                let payload = activity::Activity::new().state(&formatted_title);
-
-                match drp.set_activity(payload) {
-                    Ok(_) => println!("Activity set successfully."),
-                    Err(e) => println!("Failed to set activity: {}", e),
-                }
-            },
-            Err(e) => println!("Failed to connect to Discord: {}", e),
-        }
-    } else {
-        println!("Discord is not running. Continuing without Discord Rich Presence.");
-    }
+    let format_title = format!("Playing {} by {}", title, artist);
 
     let sink_clone = Arc::clone(&sink);
     let handle = thread::spawn(move || loop {
@@ -110,4 +86,6 @@ fn main() {
         }
     }
     handle.join().unwrap();
+
+    Ok(())
 }
