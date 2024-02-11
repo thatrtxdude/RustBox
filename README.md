@@ -9,7 +9,7 @@ Right now this project is in its infancy phase. The current focus is getting bas
 # Functionality
 
 - [x] Basic playback features (Play, Pause, Repeat)
-- [x] Discord RPC Status (Change to IPC?)
+- [x] Discord RPC Status
 - [ ] Terminal UI
 - [ ] Playlists
 - [ ] Display synced Lyrics (Maybe)
