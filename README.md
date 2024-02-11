@@ -10,7 +10,9 @@ Right now this project is in its infancy phase. The current focus is getting bas
 
 - [x] Basic playback features (Play, Pause, Repeat)
 - [x] Discord RPC Status
-- [ ] Terminal UI
+- [x] Show bitrate
+- [x] Show duration
+- [ ] Progress bar 
 - [ ] Playlists
 - [ ] Display synced Lyrics (Maybe)
 - [ ] Show remaining track time
