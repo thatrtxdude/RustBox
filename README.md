@@ -22,7 +22,7 @@ Right now this project is in its infancy phase. The current focus is getting bas
 | ------------- | ------------- |
 | FLAC | <ul><li>- [x] </li></ul> |
 | MP3 |  <ul><li>- [x] </li></ul> |
-| OGG | <ul><li>- [ ] </li></ul> |
+| OGG | <ul><li>- [x] </li></ul> |
 | WAV | <ul><li>- [ ] </li></ul> |
 | AAC | <ul><li>- [ ] </li></ul> |
 
