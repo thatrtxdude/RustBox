@@ -1,14 +1,15 @@
 extern crate clap;
 extern crate lofty;
 extern crate rodio;
+extern crate discord_rich_presence;
 
 use clap::{App, Arg};
 use lofty::{Accessor, Probe, AudioFile, TaggedFileExt};
 use rodio::Sink;
+use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 
 use std::sync::{Arc, Mutex};
 use std::thread;
-
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Parse command-line arguments
@@ -82,6 +83,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // format title for discord rpc (probably dont have to use this anymore? no idea)
     let format_title = format!("Playing {} by {}", title, artist);
 
+    let mut client = DiscordIpcClient::new("1206034100977406012")?;
+
+    client.connect()?;
+
+    let payload = activity::Activity::new().state("Listening to music").details(&format_title);
+
+    client.set_activity(payload)?;
+    
     // clone for handle
     let sink_clone = Arc::clone(&sink);
     let bitrate_clone = bitrate.clone();
@@ -98,6 +107,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "pause" => sink.pause(),
             "bitrate" => println!("Audio Bitrate: {}, Overall Bitrate: {}", bitrate_clone.unwrap_or(0), ovbitrate_clone.unwrap_or(0)),
             "duration" => println!("{}", displayduration_clone),
+            "help" => println!("Available inputs: play, pause, bitrate, duration | Available arguments: --repeat"),
             _ => (),
         }
     });
@@ -111,13 +121,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     sink.lock().unwrap().append(source);
                 }
             } else {
-                break;
+                client.close(); // kill discord client
+                std::process::exit() // wow
             }
-        }
+
+         }
     }
     // join handle thread at end
     handle.join().unwrap();
-
+    
     //lmao
     Ok(())
 }
