@@ -20,11 +20,11 @@ Right now this project is in its infancy phase. The current focus is getting bas
 
 | File Format 	| Support                  	| Added 	|
 |:-----------:	|--------------------------	|-------	|
-| FLAC        	| <ul><li>- [x] </li></ul> 	|       	|
-| MP3         	| <ul><li>- [x] </li></ul> 	| <ul><li>f3fe90f0fdf36dd9e3479a0c87371b2313aeff10</li></ul> |
-| OGG         	| <ul><li>- [x] </li></ul> 	|       	|
-| WAV         	| <ul><li>- [ ] </li></ul> 	|       	|
-| AAC         	| <ul><li>- [ ] </li></ul> 	|       	|
+| FLAC        	| <ul><li>- [x] </li></ul> 	| [fbcded2](https://github.com/thatrtxdude/RustMusicCLI/commit/fbcded2bcd255a475414b296ff4e77911d27fc58) 	|
+| MP3         	| <ul><li>- [x] </li></ul> 	| [f3fe90](https://github.com/thatrtxdude/RustMusicCLI/commit/f3fe90f0fdf36dd9e3479a0c87371b2313aeff10) |
+| OGG         	| <ul><li>- [x] </li></ul> 	| [f3fe90](https://github.com/thatrtxdude/RustMusicCLI/commit/f3fe90f0fdf36dd9e3479a0c87371b2313aeff10) |
+| WAV         	| <ul><li>- [ ] </li></ul> 	|     Working on it |
+| AAC         	| <ul><li>- [ ] </li></ul> 	|     ???  	|
 
 
 The file formats that aren't checked will be supported at a later date.
