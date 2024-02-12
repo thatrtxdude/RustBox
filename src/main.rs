@@ -80,7 +80,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     };
     
-    // format title for discord rpc (probably dont have to use this anymore? no idea)
+    // format title for discord rpc
     let format_title = format!("Playing {} by {}", title, artist);
 
     let mut client = DiscordIpcClient::new("1206034100977406012")?;
