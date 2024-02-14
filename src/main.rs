@@ -11,7 +11,11 @@ use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+use std::process::Command;
+use std::env;
+use std::io::{self, Write};
+
+fn play_file(file_path: &str) -> Result<(), Box<dyn std::error::Error>> { // so begins the great refactoring
     // Parse command-line arguments
     let matches = App::new("RustCLIMusic")
         .arg(
@@ -128,5 +132,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
 
          }
+    }
+}
+
+fn get_filepath_from_user() -> String {
+    print!("Please enter the file path: ");
+    io::stdout().flush().unwrap();
+
+    let mut file_path = String::new();
+    io::stdin().read_line(&mut file_path).expect("Failed to read path");
+
+    file_path.trim().to_string()
+}
+
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    if args.len() == 1 {
+        // no args passed
+        //prompt user to get file
+        let file_path = get_filepath_from_user();
+
+        // start a new instance in new terminal, pass file as an argument
+         Command::new("sh")            
+            .arg("-c")
+            .arg(format!("{} {}", args[0], file_path)) // args[0] contains the path to the current program.
+            .spawn()
+            .expect("Failed to start new terminal");
+        } else {
+            let file_path = &args[1];
+
+            match play_file(file_path) {
+                Ok(_) => println!("success"),
+                Err(e) => eprintln!("error ocured: {}", e),
+        }
     }
 }
