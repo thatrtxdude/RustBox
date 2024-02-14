@@ -178,13 +178,13 @@ fn main() {
     let mut contents = String::new();
     match file.read_to_string(&mut contents) {
         Ok(_) => {
-            // Parse the TOML string into a TOML table
+            // parse toml content to string
             let parsed_toml = match contents.parse::<toml::Value>() {
                 Ok(toml) => toml,
                 Err(e) => panic!("Failed to parse TOML: {}", e),
             };
 
-            // Access the `emulator` value from the TOML table
+            // access emulator value and open new terminal
             if let Some(config) = parsed_toml.get("config") {
                 if let Some(emulator) = config.get("emulator") {
                     if let Some(emulator_str) = emulator.as_str() {
