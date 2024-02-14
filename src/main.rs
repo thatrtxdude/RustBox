@@ -145,6 +145,8 @@ fn get_filepath_from_user() -> String {
     file_path.trim().to_string()
 }
 
+// probably the worst code ever written ahead, i have no idea if this is even a good solution for this,
+// as of writing it panics and doesn't open a new term, maybe just i3? i have no fucking clue. fuck this.
 
 fn main() {
     let args: Vec<String> = env::args().collect();
