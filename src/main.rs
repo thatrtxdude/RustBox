@@ -46,7 +46,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 return Ok(())
             }
         },
-    }; 
+    };
+
+    // test for new git key, will be removed later 
 
     // bunch of metadata related stuff
     let binding_title = tag.title(); // bindings so value doesn't get dropped while let title is borrowing
