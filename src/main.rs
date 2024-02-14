@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .required(true)
                 .takes_value(true)
                 .index(1)
-                .help("Input FLAC file to play"),
+                .help("Input file path to file that the player should play"),
         )
         .arg(Arg::with_name("repeat").long("repeat").help("Repeats song"))
         .get_matches();
@@ -100,7 +100,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let displayduration_clone = displayduration.clone();
     
     // handle user inputs    
-    let handle = thread::spawn(move || loop {
+     thread::spawn(move || loop {
         let mut input = String::new();
         std::io::stdin().read_line(&mut input).unwrap();
         let sink = sink_clone.lock().unwrap();
@@ -124,14 +124,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             } else {
                 client.close(); // kill discord client
-                std::process::exit() // wow
+                std::process::exit(0) // wow
             }
 
          }
     }
-    // join handle thread at end
-    handle.join().unwrap();
-    
-    //lmao
-    Ok(())
 }
