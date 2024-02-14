@@ -1,5 +1,4 @@
 extern crate clap;
-extern crate dirs;
 extern crate discord_rich_presence;
 extern crate lofty;
 extern crate rodio;
@@ -8,17 +7,8 @@ use clap::{App, Arg};
 use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use lofty::{Accessor, AudioFile, Probe, TaggedFileExt};
 use rodio::Sink;
-
 use std::sync::{Arc, Mutex};
 use std::thread;
-
-use std::io::{self, Read, Write};
-use std::process::Command;
-
-use std::env;
-use std::fs::File;
-
-use toml;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // so begins the great refactoring
@@ -138,10 +128,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     sink.lock().unwrap().append(source);
                 }
             } else {
-                client.close(); // kill discord client
+                client.close()?; // kill discord client
                 std::process::exit(0) // wow
-                }
             }
         }
     }
+}
 

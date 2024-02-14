@@ -1,6 +1,6 @@
 [package]
-name = "rustyAudio"
-version = "0.1.0"
+name = "rust-music-cli"
+version = "0.2.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -9,10 +9,5 @@ edition = "2021"
 clap = "3.0"
 rodio = "0.17"
 lofty = "0.18.2"
-discord-rpc-client = "0.4.0"
 discord-rich-presence = "0.2.3"
-toml = "0.8.10"
-serde = "1.0.196"
-serde_derive = "1.0.196"
-dirs = "5.0.1"
 
