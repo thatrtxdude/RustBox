@@ -2,6 +2,7 @@ extern crate clap;
 extern crate lofty;
 extern crate rodio;
 extern crate discord_rich_presence;
+extern crate dirs;
 
 use clap::{App, Arg};
 use lofty::{Accessor, Probe, AudioFile, TaggedFileExt};
@@ -11,9 +12,14 @@ use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-use std::process::Command;
-use std::env;
-use std::io::{self, Write};
+use std::process::{Command, exit};
+use std::io::{self, Write, Read};
+use std::path::Path;
+use std::fs::File;
+use std::fs;
+
+use serde_derive::Deserialize;
+use toml;
 
 fn play_file(file_path: &str) -> Result<(), Box<dyn std::error::Error>> { // so begins the great refactoring
     // Parse command-line arguments
@@ -149,25 +155,53 @@ fn get_filepath_from_user() -> String {
 // as of writing it panics and doesn't open a new term, maybe just i3? i have no fucking clue. fuck this.
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
 
-    if args.len() == 1 {
-        // no args passed
-        //prompt user to get file
-        let file_path = get_filepath_from_user();
-
-        // start a new instance in new terminal, pass file as an argument
-         Command::new("sh")            
-            .arg("-c")
-            .arg(format!("{} {}", args[0], file_path)) // args[0] contains the path to the current program.
-            .spawn()
-            .expect("Failed to start new terminal");
-        } else {
-            let file_path = &args[1];
-
-            match play_file(file_path) {
-                Ok(_) => println!("success"),
-                Err(e) => eprintln!("error ocured: {}", e),
+    // Specify the path to the TOML file
+    let config_path = match dirs::config_dir() {
+        Some(mut path) => {
+            path.push("RustMusicCLI");
+            path.push("config.toml");
+            path
         }
+        None => {
+            panic!("Could not determine the configuration directory");
+        }
+    };
+
+    // Open the file
+    let mut file = match File::open(&config_path) {
+        Ok(file) => file,
+        Err(e) => panic!("Failed to open file: {}", e),
+    };
+
+    // what the fuck
+    let mut contents = String::new();
+    match file.read_to_string(&mut contents) {
+        Ok(_) => {
+            // Parse the TOML string into a TOML table
+            let parsed_toml = match contents.parse::<toml::Value>() {
+                Ok(toml) => toml,
+                Err(e) => panic!("Failed to parse TOML: {}", e),
+            };
+
+            // Access the `emulator` value from the TOML table
+            if let Some(config) = parsed_toml.get("config") {
+                if let Some(emulator) = config.get("emulator") {
+                    if let Some(emulator_str) = emulator.as_str() {
+                        match Command::new(emulator_str).spawn() {
+                            Ok(_) => println!("Successfully opened {}", emulator_str),
+                            Err(e) => println!("Failed to open {}: {}", emulator_str, e),
+                        }
+                    } else {
+                        println!("Emulator value is not a string");
+                    }
+                } else {
+                    println!("Emulator key not found");
+                }
+            } else {
+                println!("Config key not found");
+            }
+        }
+        Err(e) => panic!("Failed to read file: {}", e),
     }
 }

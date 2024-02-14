@@ -11,4 +11,8 @@ rodio = "0.17"
 lofty = "0.18.2"
 discord-rpc-client = "0.4.0"
 discord-rich-presence = "0.2.3"
+toml = "0.8.10"
+serde = "1.0.196"
+serde_derive = "1.0.196"
+dirs = "5.0.1"
 
