@@ -1,6 +1,6 @@
 # Work in progress CLI Music player written in Rust
 
-Fast and lightweight CLI-Based music player written in Rust.
+RustBox is a Fast and lightweight CLI-Based music player written in well, Rust.
 
 I started this project as a way to learn Rust. Code might not be the cleanest due to that.
 
