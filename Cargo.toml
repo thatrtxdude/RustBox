@@ -1,5 +1,5 @@
 [package]
-name = "rust-music-cli"
+name = "rustbox"
 version = "0.2.0"
 edition = "2021"
 
@@ -10,4 +10,5 @@ clap = "3.0"
 rodio = "0.17"
 lofty = "0.18.2"
 discord-rich-presence = "0.2.3"
+indicatif = "0.17.8"
 
