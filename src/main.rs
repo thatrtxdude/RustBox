@@ -10,6 +10,9 @@ use rodio::Sink;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+
+// kendrick ist fett
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // so begins the great refactoring
     // Parse command-line arguments
