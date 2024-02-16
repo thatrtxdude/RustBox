@@ -42,7 +42,8 @@ Other audio drivers have not been tested and I can't gurantee functionality with
 
 The goal of this project is to create an easy to use, well-documented and fast music player with modern functionality such as playlists, shuffling, etc.
 
-Integration with applications like Spotify are likely to never happen, as I like to actually **own** my music.
+
+
 
 # License
 
